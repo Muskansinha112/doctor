@@ -88,6 +88,54 @@ router.get("/:id", authMiddleware, async (req, res) => {
   }
 });
 
+// @route   POST api/patients/:id/growth-measurements
+// Save a manually entered child height and weight measurement.
+router.post("/:id/growth-measurements", authMiddleware, async (req, res) => {
+  try {
+    const { measuredAt, ageInMonths, heightCm, weightKg } = req.body;
+    const allowedAssessments = ["not-assessed", "low-growth", "expected-range", "high-bmi", "urgent-review"];
+    const chartAssessment = req.body.chartAssessment || "not-assessed";
+    const values = [ageInMonths, heightCm, weightKg].map(Number);
+
+    if (
+      values.some((value) => !Number.isFinite(value)) ||
+      values[0] < 0 || values[0] > 228 ||
+      values[1] < 30 || values[1] > 230 ||
+      values[2] < 1 || values[2] > 250
+    ) {
+      return res.status(400).json({ msg: "Enter a valid age, height, and weight." });
+    }
+    if (!allowedAssessments.includes(chartAssessment)) {
+      return res.status(400).json({ msg: "Choose a valid growth chart assessment." });
+    }
+
+    const date = measuredAt ? new Date(measuredAt) : new Date();
+    if (Number.isNaN(date.getTime())) {
+      return res.status(400).json({ msg: "Enter a valid measurement date." });
+    }
+
+    const patient = await Patient.findById(req.params.id);
+    if (!patient) {
+      return res.status(404).json({ msg: "Patient not found." });
+    }
+
+    const bmi = values[2] / Math.pow(values[1] / 100, 2);
+    patient.growthMeasurements.push({
+      measuredAt: date,
+      ageInMonths: values[0],
+      heightCm: values[1],
+      weightKg: values[2],
+      bmi: Number(bmi.toFixed(2)),
+      chartAssessment,
+    });
+    await patient.save();
+    res.status(201).json(patient);
+  } catch (err) {
+    console.error("Save growth measurement error:", err.message);
+    res.status(500).json({ msg: "Could not save the measurement." });
+  }
+});
+
 // --- ROUTE 4: SAVE STRUCTURE ---
 // @route   PUT api/patients/:id/structure
 router.put("/:id/structure", authMiddleware, async (req, res) => {

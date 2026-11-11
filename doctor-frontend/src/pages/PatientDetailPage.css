@@ -206,3 +206,92 @@
   color: #ffffff;
   text-decoration: none;
 }
+
+.growth-intro,
+.growth-note {
+  color: #536273;
+  line-height: 1.6;
+}
+
+.growth-form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  align-items: end;
+  gap: 16px;
+  margin: 20px 0 24px;
+}
+
+.growth-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  color: #34495e;
+  font-weight: 600;
+}
+
+.growth-form input,
+.growth-form select {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ced4da;
+  border-radius: 5px;
+  font: inherit;
+}
+
+.growth-assessment-field {
+  grid-column: span 2;
+}
+
+.growth-table-wrap {
+  overflow-x: auto;
+}
+
+.growth-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.growth-table th,
+.growth-table td {
+  padding: 11px 12px;
+  border-bottom: 1px solid #e9ecef;
+  white-space: nowrap;
+}
+
+.growth-table th {
+  color: #34495e;
+  background: #f8f9fa;
+}
+
+.nutrition-guidance {
+  margin-top: 24px;
+  padding: 18px;
+  border-left: 4px solid #27ae60;
+  background: #f4faf6;
+  border-radius: 4px;
+}
+
+.nutrition-guidance h4 {
+  margin: 0 0 8px;
+  color: #24583a;
+}
+
+.nutrition-guidance p {
+  line-height: 1.65;
+}
+
+.growth-error {
+  color: #b42318 !important;
+}
+
+@media (max-width: 600px) {
+  .growth-form {
+    grid-template-columns: 1fr;
+  }
+
+  .growth-assessment-field {
+    grid-column: auto;
+  }
+}
